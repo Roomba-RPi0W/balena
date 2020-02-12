@@ -1,4 +1,5 @@
 import os
+import zmq
 from rpi_streamer.rpi_streamer import StreamingHandler, StreamingServer
 
 
@@ -14,7 +15,12 @@ class RoombaStreamingHandler(StreamingHandler):
     def do_POST(self):
         # TODO: actually implement the functions
         if self.path == '/api/clean':
-            content = '{"status": "ok"}'
+            context = zmq.Context()
+            socket = context.socket(zmq.REQ)
+            socket.connect('tcp://control:5555')
+            socket.send(b'clean')
+
+            content = '{"status": "%s"}' % socket.recv().decode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Content-Length', len(content))
@@ -23,7 +29,12 @@ class RoombaStreamingHandler(StreamingHandler):
             return
 
         if self.path == '/api/stop':
-            content = '{"status": "ok"}'
+            context = zmq.Context()
+            socket = context.socket(zmq.REQ)
+            socket.connect('tcp://control:5555')
+            socket.send(b'stop')
+
+            content = '{"status": "%s"}' % socket.recv().decode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Content-Length', len(content))

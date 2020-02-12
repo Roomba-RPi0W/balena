@@ -11,7 +11,10 @@ RUN echo "deb http://archive.raspbian.org/raspbian oldstable firmware" >> /etc/a
     rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install wheel
-RUN pip3 install https://github.com/kipe/rpi-streamer/archive/master.zip
+RUN pip3 install https://github.com/kipe/rpi-streamer/archive/master.zip pyzmq
+
+ENV PYTHONUNBUFFERED=1
 
 COPY roomba /usr/local/src
+
 CMD ["python3", "/usr/local/src/roomba.py"]
