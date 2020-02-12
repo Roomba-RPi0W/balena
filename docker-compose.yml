@@ -19,6 +19,10 @@ services:
 
   control:
     build: control
+    devices:
+      - /dev/serial0:/dev/serial0
+    cap_add:
+      - SYS_RAWIO
     labels:
       io.resin.update.strategy: 'kill-then-download'
     restart: unless-stopped
