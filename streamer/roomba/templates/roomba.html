@@ -4,12 +4,32 @@
 
 {% block card_body_content %}
 {{ super() }}
-<button class="btn btn-block btn-success">
+<button class="btn btn-block btn-success" onclick="clean();">
     <i class="fa fa-broom"></i>
     Clean
 </button>
-<button class="btn btn-block btn-danger">
+<button class="btn btn-block btn-danger" onclick="stop();">
     <i class="fa fa-hand-paper"></i>
     Stop
 </button>
+{% endblock %}
+
+{% block javascript %}
+{{ super() }}
+function clean() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open('POST', '/api/clean', true);
+    xhttp.onloadend = function() {
+        alert('Cleaning started!');
+    }
+    xhttp.send();
+}
+function stop() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open('POST', '/api/stop', true);
+    xhttp.onloadend = function() {
+        alert('Halted to a stop!');
+    }
+    xhttp.send();
+}
 {% endblock %}

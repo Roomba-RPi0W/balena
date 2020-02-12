@@ -14,7 +14,7 @@ class RoombaStreamingHandler(StreamingHandler):
     def do_POST(self):
         # TODO: actually implement the functions
         if self.path == '/api/clean':
-            content = '{"status": "ok", "filename": "%s"}' % (filename)
+            content = '{"status": "ok"}'
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Content-Length', len(content))
@@ -23,7 +23,7 @@ class RoombaStreamingHandler(StreamingHandler):
             return
 
         if self.path == '/api/stop':
-            content = '{"status": "ok", "filename": "%s"}' % (filename)
+            content = '{"status": "ok"}'
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Content-Length', len(content))
