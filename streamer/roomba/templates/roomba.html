@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+
+{% block title %}RoombaStreamer{% endblock %}
+
+{% block card_body_content %}
+{{ super() }}
+<button class="btn btn-block btn-success">
+    <i class="fa fa-broom"></i>
+    Clean
+</button>
+<button class="btn btn-block btn-danger">
+    <i class="fa fa-hand-paper"></i>
+    Stop
+</button>
+{% endblock %}
