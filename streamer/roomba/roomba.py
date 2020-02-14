@@ -13,7 +13,6 @@ class RoombaStreamingHandler(StreamingHandler):
         ] + super().template_paths
 
     def do_POST(self):
-        # TODO: actually implement the functions
         if self.path == '/api/clean':
             context = zmq.Context()
             socket = context.socket(zmq.REQ)
@@ -58,9 +57,6 @@ class RoombaStreamingHandler(StreamingHandler):
             self.end_headers()
             self.wfile.write(content.encode('utf-8'))
             return
-
-        self.send_error(404)
-        self.end_headers()
 
         return super().do_POST()
 
