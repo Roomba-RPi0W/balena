@@ -21,6 +21,7 @@ services:
     build: control
     devices:
       - /dev/serial0:/dev/serial0
+      - /dev/mem:/dev/mem
     cap_add:
       - SYS_RAWIO
     labels:
