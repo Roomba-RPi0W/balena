@@ -15,12 +15,19 @@ class RoombaControl(PyRoombaAdapter):
         OUTPUT_ENABLE.on()
 
     def start_cleaning(self):
+        print('Cleaning, as requested!')
         self.wake_up()
         return super().start_cleaning()
 
     def turn_off_power(self):
+        print('Halting to a stop, as requested!')
         self.wake_up()
         return super().turn_off_power()
+
+    def start_seek_dock(self):
+        print('Seeking dock, as requested!')
+        self.wake_up()
+        return super().start_seek_dock()
 
     def wake_up(self):
         print('Waking up the Roomba')
@@ -41,12 +48,13 @@ if __name__ == '__main__':
         message = socket.recv().decode('utf-8')
 
         if message == 'clean':
-            print('Cleaning, as requested!')
             rb.start_cleaning()
             socket.send(b"ok")
         elif message == 'stop':
-            print('Halting to a stop, as requested!')
             rb.turn_off_power()
+            socket.send(b"ok")
+        elif message == 'dock':
+            rb.start_seek_dock()
             socket.send(b"ok")
         elif message == 'wake_up':
             rb.wake_up()

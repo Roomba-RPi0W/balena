@@ -8,6 +8,10 @@
     <i class="fa fa-broom"></i>
     Clean
 </button>
+<button class="btn btn-block btn-primary" onclick="dock();">
+    <i class="fa fa-home"></i>
+    Stop
+</button>
 <button class="btn btn-block btn-danger" onclick="stop();">
     <i class="fa fa-hand-paper"></i>
     Stop
@@ -21,6 +25,14 @@ function clean() {
     xhttp.open('POST', '/api/clean', true);
     xhttp.onloadend = function() {
         alert('Cleaning started!');
+    }
+    xhttp.send();
+}
+function dock() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open('POST', '/api/dock', true);
+    xhttp.onloadend = function() {
+        alert('Seeking dock!');
     }
     xhttp.send();
 }

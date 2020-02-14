@@ -29,6 +29,21 @@ class RoombaStreamingHandler(StreamingHandler):
             self.wfile.write(content.encode('utf-8'))
             return
 
+        if self.path == '/api/dock':
+            context = zmq.Context()
+            socket = context.socket(zmq.REQ)
+            socket.connect('tcp://control:5555')
+            socket.send(b'dock')
+            reply = socket.recv().decode('utf-8')
+
+            content = '{"status": "%s"}' % reply
+            self.send_response(200 if reply == 'ok' else 500)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', len(content))
+            self.end_headers()
+            self.wfile.write(content.encode('utf-8'))
+            return
+
         if self.path == '/api/stop':
             context = zmq.Context()
             socket = context.socket(zmq.REQ)
