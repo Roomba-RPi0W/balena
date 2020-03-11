@@ -1,5 +1,4 @@
 import time
-import zmq
 from gpiozero import LED
 from pyroombaadapter import PyRoombaAdapter
 from flask import Flask
