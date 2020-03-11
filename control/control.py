@@ -2,10 +2,12 @@ import time
 import zmq
 from gpiozero import LED
 from pyroombaadapter import PyRoombaAdapter
+from flask import Flask
 
 
 BRC = LED('BOARD16')
 OUTPUT_ENABLE = LED('BOARD18')
+app = Flask('RoombaControl')
 
 
 class RoombaControl(PyRoombaAdapter):
@@ -36,30 +38,35 @@ class RoombaControl(PyRoombaAdapter):
         BRC.on()
 
 
+@app.route('/clean')
+def clean():
+    global rb
+    rb.start_cleaning()
+    return '', 200
+
+
+@app.route('/stop')
+def stop():
+    global rb
+    rb.turn_off_power()
+    return '', 200
+
+
+@app.route('/dock')
+def dock():
+    global rb
+    rb.start_seek_dock()
+    return '', 200
+
+
+@app.route('/wake_up')
+def wake_up():
+    global rb
+    rb.wake_up()
+    return '', 200
+
+
 if __name__ == '__main__':
-    context = zmq.Context()
-    socket = context.socket(zmq.REP)
-    socket.bind("tcp://*:5555")
-
+    global rb
     rb = RoombaControl()
-
-    while True:
-        #  Wait for next request from client
-        message = socket.recv().decode('utf-8')
-
-        if message == 'clean':
-            rb.start_cleaning()
-            socket.send(b"ok")
-        elif message == 'stop':
-            rb.turn_off_power()
-            socket.send(b"ok")
-        elif message == 'dock':
-            rb.start_seek_dock()
-            socket.send(b"ok")
-        elif message == 'wake_up':
-            rb.wake_up()
-            socket.send(b"ok")
-        else:
-            print('WTF are you going on about?')
-            #  Send reply back to client
-            socket.send(b"fail")
+    app.run(host='0.0.0.0', port=80)

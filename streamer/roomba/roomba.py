@@ -1,5 +1,5 @@
 import os
-import zmq
+import requests
 from rpi_streamer.rpi_streamer import StreamingHandler, StreamingServer
 
 
@@ -12,33 +12,26 @@ class RoombaStreamingHandler(StreamingHandler):
             os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
         ] + super().template_paths
 
-    def __send_to_zmq(self, command):
-        context = zmq.Context()
-        socket = context.socket(zmq.REQ)
-        socket.connect('tcp://control:5555')
-        socket.send(command)
-        return socket.recv().decode('utf-8')
+    def __call_control(self, command):
+        return requests.get('http://control/%s' % command).status_code
 
     def __handle_command(self, command):
-        reply = self.__send_to_zmq(command)
-        content = '{"status": "%s"}' % reply
-        self.send_response(200 if reply == 'ok' else 500)
+        self.send_response(self.__call_control(command))
         self.send_header('Content-Type', 'application/json')
-        self.send_header('Content-Length', len(content))
+        self.send_header('Content-Length', 0)
         self.end_headers()
-        self.wfile.write(content.encode('utf-8'))
 
     def do_POST(self):
         if self.path == '/api/clean':
-            self.__handle_command(b'clean')
+            self.__handle_command('clean')
             return
 
         if self.path == '/api/dock':
-            self.__handle_command(b'dock')
+            self.__handle_command('dock')
             return
 
         if self.path == '/api/stop':
-            self.__handle_command(b'stop')
+            self.__handle_command('stop')
             return
 
         return super().do_POST()
